@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class QuickFixCustomers(Document):
+class SalesInvoice(Document):
 	pass
