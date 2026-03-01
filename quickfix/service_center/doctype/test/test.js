@@ -1,7 +1,7 @@
 // Copyright (c) 2026, ajish and contributors
 // For license information, please see license.txt
 
-// frappe.ui.form.on("Sales Invoice", {
+// frappe.ui.form.on("test", {
 // 	refresh(frm) {
 
 // 	},
