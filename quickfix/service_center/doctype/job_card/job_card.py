@@ -87,6 +87,7 @@ class JobCard(Document):
 	def on_cancel(self):
 		self.status="Cancelled"
 		self.revert_stock()
+		self.cancel_service_invoice()
 	
 	def revert_stock(self):
 		for row in self.parts_used:
@@ -94,3 +95,12 @@ class JobCard(Document):
 			new_qty=qty+row.quantity
 			frappe.db.set_value("Spare Part", row.part, "stock_quantity", new_qty)
 	
+	def cancel_service_invoice(self):
+		doc=frappe.db.get_value("Service Invoice", {"job_card": self.name}, "name")
+		if doc:
+			service_invoice=frappe.get_doc("Service Invoice",doc)
+			if service_invoice.docstatus==1:
+				service_invoice.cancel()
+	def on_trash(self):
+		if self.status!="Cancelled" and self.status!="Draft":
+			frappe.throw("Cannot delete this Job Card")
