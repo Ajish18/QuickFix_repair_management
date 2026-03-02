@@ -254,9 +254,9 @@ app_license = "mit"
 fixtures=[
     {"doctype": "Device Type"}
 ]
-permission_query_conditions = {
-    "Job Card": "quickfix.permissions.job_card_query"
-}
+# permission_query_conditions = {
+#     "Job Card": "quickfix.permissions.job_card_query"
+# }
 
 has_permission = {
     "Service Invoice": "quickfix.permissions.has_permission"

@@ -79,8 +79,7 @@ bench console: call frappe.get_doc_permissions(doc) on a Job Card
 frappe.session.user
 'test@gmail.com'
 doc = frappe.get_doc("Job Card", "JC-2026-00001")
-    ...: get_doc_permissions(doc) frappe.session.user
-Out[23]: 'test@gmail.com'
+    ...: get_doc_permissions(doc)
 {'if_owner': {},
  'has_if_owner_enabled': False,
  'select': 0,
@@ -97,3 +96,5 @@ Out[23]: 'test@gmail.com'
  'import': 0,
  'export': 0,
  'share': 0}
+
+ using get_all in whitelist method, any user even the guest user can see the data without permission. But get_list, checks the role permission.

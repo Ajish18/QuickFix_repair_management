@@ -82,3 +82,55 @@ def transfer_job(from_tech, to_tech):
             title="Transfer Job Failed"
         )
         raise
+
+@frappe.whitelist()
+def get_job_cards_unsafe():
+    return frappe.get_all(
+        "Job Card",
+        fields="*"
+    )
+
+@frappe.whitelist()
+def get_job_cards_safe():
+    user = frappe.session.user
+
+    records = frappe.get_list(
+        "Job Card",
+        fields=[
+            "name",
+            "customer_name",
+            "device_type",
+            "status",
+            "payment_status",
+            "customer_phone",
+            "customer_email"
+        ]
+    )
+
+    # Managers see everything
+    if "QF Manager" in frappe.get_roles(user):
+        return records
+
+    # Others → hide sensitive fields
+    for r in records:
+        r.pop("customer_phone", None)
+        r.pop("customer_email", None)
+
+    return records
+
+def job_ready_email(job_card_name):
+    job_card=frappe.get_value(
+        "Job Card",
+        job_card_name,
+        ["customer_email","customer_name","device_type"],
+        as_dict=True
+        )
+    frappe.sendmail(
+        recipients=job_card.customer_email,
+        subject=(f"Your device is ready for delivery - Job Card {job_card.name}"),
+        message=(f"""Dear {job_card.customer_name},
+                 <br><br>Your {job_card.device_type} has been repaired and is ready for pickup.
+                 <br><br>Thank you for choosing our service!<br><br>
+                 Best regards,
+                 <br>QuickFix Service Center""")
+    )
