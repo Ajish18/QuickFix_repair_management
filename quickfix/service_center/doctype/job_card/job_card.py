@@ -104,3 +104,5 @@ class JobCard(Document):
 	def on_trash(self):
 		if self.status!="Cancelled" and self.status!="Draft":
 			frappe.throw("Cannot delete this Job Card")
+	# def on_update(self):
+	# 	self.save()
