@@ -19,7 +19,7 @@ Step 3 - Error visibility
 
     With developer mode = 0, too observed the samething, it browser shows show error button and also login as different user it shows the same. BEcause we run this in localhost.
 
-    In production the error will availabkle in the logs folder under a specific files example: scheduler error in scheduler.log from here developer can tracback.
+    In production the error will available in the logs folder under a specific files example: scheduler error in scheduler.log from here developer can tracback.
 
 Step 4 - Permission check location
     In a whitelisted method, call frappe.get_doc("Job Card", name) WITHOUT
@@ -98,3 +98,35 @@ doc = frappe.get_doc("Job Card", "JC-2026-00001")
  'share': 0}
 
  using get_all in whitelist method, any user even the guest user can see the data without permission. But get_list, checks the role permission.
+ --------------------------------------------------------------------------------------------
+ E-1
+ on_update() - demonstrate the recursion pitfall
+    Using self.save() in on_update shows Recursion error as {
+	"exception": "RecursionError: maximum recursion depth exceeded",
+	"exc_type": "RecursionError",
+	"_exc_source": "quickfix (app)"
+    }
+    Because on_update runs after the document saved(), in on update we use self.save() it will executed infinitely. So, the error arises. The correct pattern for update is to use db_set as it will update in database as well.
+
+E2 - autoname & Renaming
+    using frappe.rename_doc to change the name of a document, the linked field is also gets updated it is handled in frappe/model/rename_doc.py in update_link_field method, it first fetch the available link field and passed as arguments to the update_link_field_values()
+
+    merge=True can be used to combine both documents eg. TECH-0001 to TECH-0002, But there will be a loss of data from TECH-0001
+
+E3 -
+Part B - Upgrade friction analysis:
+    * If we didn't call super.validate() the function we written in the parent class JobCard
+    won't gets executed.
+    * doc_events are safer because it didn't change the controller.
+Part C - Controller method for Spare Part
+    def on_update(self):
+		doc = frappe.get_doc("QuickFix Settings", "QuickFix Settings")
+		threshold = doc.low_stock_alert_enabled
+		threshold = frappe.db.get_value("QuickFix Settings", None, "low_stock_alert_enabled")
+		
+        as per the task only a singlr value os retrived So, it is best to use get_single_value. If we use get_doc It will take all the fields in the object.
+---------------------------------------------------------------------------------------------
+F1 - doc_events: Wildcard, Multiple Handlers, Order 
+Task B - Multiple handler conflict:
+    * If validate is written in both controller and handler, the controller will gets executed first. When error both raises error, the controller will throw first and stops the handler function.
+    * When using "*" and a specific event in doc_event, both gets executed.

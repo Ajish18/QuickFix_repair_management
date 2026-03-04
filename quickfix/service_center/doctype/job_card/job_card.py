@@ -85,7 +85,7 @@ class JobCard(Document):
 				  timeout=300)
 	
 	def on_cancel(self):
-		self.status="Cancelled"
+		frappe.db.set_value("Job Card", self.name, "status", "Cancelled")
 		self.revert_stock()
 		self.cancel_service_invoice()
 	
@@ -101,8 +101,13 @@ class JobCard(Document):
 			service_invoice=frappe.get_doc("Service Invoice",doc)
 			if service_invoice.docstatus==1:
 				service_invoice.cancel()
+			# elif service_invoice.docstatus==0:
+			# 	service_invoice.submit()
+			# 	service_invoice.cancel()
+
 	def on_trash(self):
 		if self.status!="Cancelled" and self.status!="Draft":
 			frappe.throw("Cannot delete this Job Card")
+			
 	# def on_update(self):
 	# 	self.save()

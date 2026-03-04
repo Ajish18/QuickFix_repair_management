@@ -134,3 +134,13 @@ def job_ready_email(job_card_name):
                  Best regards,
                  <br>QuickFix Service Center""")
     )
+
+def send_urgent_alert(job_card, manager):
+    frappe.sendmail(
+        recipients=manager,
+        subject=f"Urgent Alert: Job Card {job_card} is unassigned",
+        message=f"""Dear Manager,
+                 <br><br>Job Card {job_card} has been marked as Urgent but is currently unassigned.
+                 <br><br>Please assign a technician as soon as possible to avoid delays.
+                 <br><br>Best regards,<br>QuickFix System"""    
+    )

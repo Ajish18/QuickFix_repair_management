@@ -1,7 +1,10 @@
 import frappe
 
 def job_card_query(user):
-    if "QF Technician" in frappe.get_roles(user):
+    roles = frappe.get_roles(user)
+    if "System Manager" in roles or user == "Administrator":
+        return
+    if "QF Technician" in roles:
         return f"""
         `tabJob Card`.assigned_technician IN (
             SELECT name FROM `tabTechnician`

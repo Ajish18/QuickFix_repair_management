@@ -1,3 +1,6 @@
+from quickfix import quickfix
+
+
 app_name = "quickfix"
 app_title = "QuickFix"
 app_publisher = "ajish"
@@ -254,10 +257,32 @@ app_license = "mit"
 fixtures=[
     {"doctype": "Device Type"}
 ]
-# permission_query_conditions = {
-#     "Job Card": "quickfix.permissions.job_card_query"
-# }
+permission_query_conditions = {
+    "Job Card": "quickfix.permissions.job_card_query"
+}
 
 has_permission = {
     "Service Invoice": "quickfix.permissions.has_permission"
 }
+
+override_doctype_class = {
+    "Job Card": "quickfix.overrides.custom_job_card.CustomJobCard"
+}
+doc_events = {
+    "*": {
+        "on_update": "quickfix.audit.audit_log",
+        "on_submit": "quickfix.audit.audit_log",
+        "on_cancel": "quickfix.audit.audit_log"
+    },
+    "test":{
+        "on_update":"quickfix.audit.audit_log"
+    }
+}
+
+# doc_events={
+#     "Job Card": {
+#         "validate": "quickfix.events.validate_technician"
+#     }
+# }
+
+after_install = "quickfix.setup.after_install"
