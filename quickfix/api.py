@@ -144,3 +144,20 @@ def send_urgent_alert(job_card, manager):
                  <br><br>Please assign a technician as soon as possible to avoid delays.
                  <br><br>Best regards,<br>QuickFix System"""    
     )
+
+import frappe
+
+@frappe.whitelist()
+def custom_get_count(doctype, filters=None, debug=False, cache=False):
+    log = frappe.get_doc({
+        "doctype": "Audit Log",
+        "doctype_name": doctype,
+        "action": "count_queried",
+        "user": frappe.session.user
+    })
+
+    log.insert(ignore_permissions=True)
+    frappe.db.commit()
+
+    from frappe.client import get_count
+    return get_count(doctype, filters, debug, cache)

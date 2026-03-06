@@ -254,8 +254,16 @@ app_license = "mit"
 #     "Role",
 #     "Custom DocPerm"
 # ]
-fixtures=[
-    {"doctype": "Device Type"}
+# fixtures=[
+#     {"doctype": "Device Type"}
+# ]
+fixtures = [
+    "Custom Field",
+    "Property Setter",
+    "Role",
+    "Workspace",
+    {"doctype": "Device Type"},
+    {"doctype": "Quickfix Settings"}
 ]
 permission_query_conditions = {
     "Job Card": "quickfix.permissions.job_card_query"
@@ -286,3 +294,38 @@ doc_events = {
 # }
 
 after_install = "quickfix.setup.after_install"
+before_uninstall = "quickfix.uninstall.before_uninstall"
+extend_bootinfo = "quickfix.boot.extend_bootinfo"
+app_include_js = "quickfix.bundle.js"
+
+on_session_creation = "quickfix.events.log_login"
+on_logout = "quickfix.events.log_logout"
+
+# web_include_js = "/assets/quickfix/js/web.js"
+# doctype_js = {
+#     "Job Card": "public/js/job_card.js"
+# }
+doctype_list_js = {
+    "Job Card": "public/js/job_card_list.js"
+}
+
+jinja = {
+    "methods": ["quickfix.utils.get_shop_name"],
+    "filters": ["quickfix.utils.filter_job_id"]
+}
+
+website_route_rules = [
+    {"from_route": "/track-job", "to_route": "track_job"}
+]
+
+portal_menu_items = [
+    {
+        "title": "Track My Job",
+        "route": "/track_job",
+        "role": "Guest"
+    }
+]
+
+override_whitelisted_methods = {
+ "frappe.client.get_count": "quickfix.api.custom_get_count"
+}

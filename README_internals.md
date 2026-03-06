@@ -130,3 +130,35 @@ F1 - doc_events: Wildcard, Multiple Handlers, Order
 Task B - Multiple handler conflict:
     * If validate is written in both controller and handler, the controller will gets executed first. When error both raises error, the controller will throw first and stops the handler function.
     * When using "*" and a specific event in doc_event, both gets executed.
+
+
+F3 - Asset, Jinja & Website Hooks 
+Asset hooks:
+    app_include_js -> is used to load the js file for the desk apps.
+                        eg. job card
+                    it can be used for navbar, custom buttons etc.
+    web_include_js -> is used to load the js file for the website.
+                        eg. localhost:8000/about
+                    It is used to create web page designs like adding contents to about contact page.
+    doctype_js -> This is used to perform action inside/opening a document.
+    doctype_list_js -> This is used to perform action in the form list view.
+
+     cache-busting -> To improve the performance, browser cache the js scripts, If we do any modification in the js code, the changes are not known to the browser still it holds the old file. To avoid this we use "bench build" it will rebuild the asset and the file will be updated.
+Jinja Hooks:
+    jinja context in print format - here the document is default,
+                                    eg. in Job Card JC-2026-00001, customer name=Ajish
+                                        in print format {{doc.customer_name}}
+    jinja context in webpages - here the document is not default, So, we need to privide
+                                value to the variable.
+                                eg. context.shop="Quickfix"
+
+F4 - override_whitelisted_methods Hook 
+
+override_whitelisted_method -> this can be used to modif one apps method to other without  
+                               changing or editing the actual code.
+monkey_patch - It is used to modify the function in runtime, and it is difficult to debug.
+
+If TWO apps override the same method, the hooks work in the apps installation order. And the last insatlled app will override and remaining will not override.
+
+signature mismatch - It mean, the number of parameters in original method and override
+                     method must be same, else error will be shown.\

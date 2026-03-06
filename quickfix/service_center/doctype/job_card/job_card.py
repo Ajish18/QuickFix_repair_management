@@ -28,7 +28,7 @@ class JobCard(Document):
 			frappe.throw("Phone number must be 10 digits long.")
 	
 	def validate_technician(self):
-		if self.status=="In Repair" and not self.assigned_technician:
+		if self.status in ["In Repair", "Ready for Delivery","Awaiting Customer Approval","Delivered"] and not self.assigned_technician:
 			frappe.throw("Technician not assigned yet")
 	
 	def calculate_total_price(self):
