@@ -161,4 +161,10 @@ monkey_patch - It is used to modify the function in runtime, and it is difficult
 If TWO apps override the same method, the hooks work in the apps installation order. And the last insatlled app will override and remaining will not override.
 
 signature mismatch - It mean, the number of parameters in original method and override
-                     method must be same, else error will be shown.\
+                     method must be same, else error will be shown.
+
+F5 - Fixtures & Property Setters in Install
+    If user create a custom field with existing field name, frappe throws error as Duplicate column.
+    Patches Order must be separate, because if one patch create field and other reads it, it will be done in order. Patch 2 thinks the field already exist, if we combine both there wont be a time to refresh and error as unknown column.
+---------------------------------------------------------------------------------------------
+

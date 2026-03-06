@@ -293,7 +293,7 @@ doc_events = {
 #     }
 # }
 
-after_install = "quickfix.setup.after_install"
+# after_install = "quickfix.setup.after_install"
 before_uninstall = "quickfix.uninstall.before_uninstall"
 extend_bootinfo = "quickfix.boot.extend_bootinfo"
 app_include_js = "quickfix.bundle.js"
@@ -329,3 +329,5 @@ portal_menu_items = [
 override_whitelisted_methods = {
  "frappe.client.get_count": "quickfix.api.custom_get_count"
 }
+
+after_install="quickfix.api.property_setter"

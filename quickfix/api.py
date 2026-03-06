@@ -161,3 +161,14 @@ def custom_get_count(doctype, filters=None, debug=False, cache=False):
 
     from frappe.client import get_count
     return get_count(doctype, filters, debug, cache)
+
+# Property setter
+def property_setter():
+    print("Property setter")
+    frappe.make_property_setter({
+        "doctype": "Job Card",
+        "fieldname": "remarks",
+        "property": "bold",
+        "value": 1,
+        "property_type": "Check"
+    })
