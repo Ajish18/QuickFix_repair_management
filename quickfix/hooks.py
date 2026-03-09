@@ -306,7 +306,7 @@ on_logout = "quickfix.events.log_logout"
 #     "Job Card": "public/js/job_card.js"
 # }
 doctype_list_js = {
-    "Job Card": "public/js/job_card_list.js"
+    "Job Card": "job_card_list.js"
 }
 
 jinja = {
@@ -330,4 +330,4 @@ override_whitelisted_methods = {
  "frappe.client.get_count": "quickfix.api.custom_get_count"
 }
 
-after_install="quickfix.api.property_setter"
+after_install = "quickfix.monkey_patches.apply_all"

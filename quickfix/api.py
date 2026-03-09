@@ -145,8 +145,6 @@ def send_urgent_alert(job_card, manager):
                  <br><br>Best regards,<br>QuickFix System"""    
     )
 
-import frappe
-
 @frappe.whitelist()
 def custom_get_count(doctype, filters=None, debug=False, cache=False):
     log = frappe.get_doc({

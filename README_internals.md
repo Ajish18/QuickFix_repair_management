@@ -167,4 +167,29 @@ F5 - Fixtures & Property Setters in Install
     If user create a custom field with existing field name, frappe throws error as Duplicate column.
     Patches Order must be separate, because if one patch create field and other reads it, it will be done in order. Patch 2 thinks the field already exist, if we combine both there wont be a time to refresh and error as unknown column.
 ---------------------------------------------------------------------------------------------
+G1 - Safe Monkey Patch with Version Guard
+* _qf_patched is for safety purpose, if not used the patch will run multiple times, it is used to run the patch one time.
+* If patch is written in __init__.py, if runs when ever the module is imported, this cause the patch code to execute multiple times, to avoid this we write it in separate file.
+* doc_events - override_doctype_class - override_whitelisted_method - monkey_patch, is the safest order because, 
+    doc_events - don't modify the framework code.
+    override_doctype_class - change the logic of a specific doctype.
+    override_whitelisted_method - override specific framework API method.
+    monkey_patch - changes the framework methods logic.
+--------------------------------------------------------------------------------------------H1 - Job Card Form Script
+    * Using frappe.call is synchronous, if we write inside validate(), before the server sends response the validate function will finshed and form saved.
+    However the response is arrived, it will execute the call back, but if validation finshed and if the document is saved, and the response may be "Invalid Job card" it breaks the logic.
 
+    * onload or refresh is safe because it controls the ui updates doesn't control the save process.
+H3 - List View & Tree View
+    * Tree Doctype:
+        Tree doctype shows hiearchial order, where parent-child relationship between documents. 
+        eg. Warehouse - Parent
+            |-section A - Child
+            |-section B - Child
+H4 - Client Script DocType vs Shipped
+    * Client Script - It is a client script doctype, inside frappe site where we can select the doctype, module and write the client script for the selected Doctype. It is suitable for simple validations.We can use fixtures, to get the code in app file. As it is not version controlled, It is hard to debug.
+    * Shipped Script - It is the js file created for each doctype. The code here can be pushed to git, and easy to maintain.Used for large validation code.
+
+    * hiding fields vs permission security:
+    Hiding done in client script will be hidden only in UI. It does'nt check permission. It can be accessed with api methods. Becaues it runs only in browser, for safety It must be handled in the server side.
+--------------------------------------------------------------------------------------------
