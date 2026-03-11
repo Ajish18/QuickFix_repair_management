@@ -129,7 +129,9 @@ def transfer_technician(job_card_name, technician):
 @frappe.whitelist()
 def mark_ready_for_delivery(job_card):
     frappe.db.set_value("Job Card", job_card, "status", "Ready for Delivery")
+    frappe.db.set_value("Job Card",job_card,"docstatus",1)
     return True
+
 @frappe.whitelist()
 def mark_as_delivered(job_card_name):
     frappe.db.set_value("Job Card", job_card_name, "status", "Delivered")

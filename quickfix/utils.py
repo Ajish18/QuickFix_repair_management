@@ -6,3 +6,4 @@ def get_shop_name():
 
 def filter_job_id(value):
     return f"JOB#{value}"
+

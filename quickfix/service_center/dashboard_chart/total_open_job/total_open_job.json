@@ -1,0 +1,37 @@
+{
+ "based_on": "creation",
+ "chart_name": "Total Open Job",
+ "chart_type": "Count",
+ "creation": "2026-03-12 00:34:26.334633",
+ "currency": "INR",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "document_type": "Job Card",
+ "dynamic_filters_json": "[]",
+ "filters_json": "[[\"Job Card\",\"status\",\"!=\",\"Ready for Delivery\"],[\"Job Card\",\"status\",\"!=\",\"Delivered\"],[\"Job Card\",\"status\",\"!=\",\"Cancelled\"]]",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "modified": "2026-03-12 00:34:26.334633",
+ "modified_by": "Administrator",
+ "module": "Service Center",
+ "name": "Total Open Job",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "parent_document_type": "",
+ "roles": [
+  {
+   "role": "QF Manager"
+  }
+ ],
+ "show_values_over_chart": 0,
+ "source": "",
+ "time_interval": "Weekly",
+ "timeseries": 0,
+ "timespan": "Last Month",
+ "type": "Line",
+ "use_report_chart": 0,
+ "value_based_on": "",
+ "y_axis": []
+}

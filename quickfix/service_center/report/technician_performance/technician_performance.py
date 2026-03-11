@@ -198,3 +198,21 @@ def get_summary(data):
         }
 
     ]
+
+@frappe.whitelist()
+def prepare_report():
+    filters = {
+        "from_date": "2026-03-01",
+        "to_date": "2026-03-10",
+        "technician": "TECH-0001"
+    }
+
+    frappe.enqueue(
+        "frappe.desk.query_report.run",
+        queue="long",
+        report_name="Technician Performance",
+        filters=filters,
+        user=frappe.session.user
+    )
+
+    return "Report queued in background"

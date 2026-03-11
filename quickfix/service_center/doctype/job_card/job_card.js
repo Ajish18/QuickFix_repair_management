@@ -19,6 +19,13 @@ frappe.ui.form.on("Job Card", {
                 }
             };
         });
+        frm.set_query("part","parts_used",function(){
+            return{
+                filters:{
+                    compatible_device_type:frm.doc.device_type
+                }
+            }
+        })
     },
     // colur code
     refresh(frm){

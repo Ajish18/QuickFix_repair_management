@@ -225,3 +225,5 @@ I1 - Query Report with SQL Safety
     search_index:
     ![alt text](image.png)
 --------------------------------------------------------------------------------------------
+I4 - Prepared Report
+Realtime-Script report is used for updated report with small amount of data, and simple calculations. Prepared report is for large data, complex calculations as it requires workers to run in background.

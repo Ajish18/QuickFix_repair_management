@@ -170,3 +170,26 @@ def property_setter():
         "value": 1,
         "property_type": "Check"
     })
+
+
+@frappe.whitelist()
+def get_status_chart_data():
+    # Fetch count of Job Cards grouped by status
+    data = frappe.db.get_all('Job Card', 
+        fields=['status', 'count(*) as count'], 
+        group_by='status'
+    )
+
+    # Format the data for the Frappe Chart engine
+    labels = [d.get('status') for d in data]
+    values = [d.get('count') for d in data]
+
+    return {
+        "labels": labels,
+        "datasets": [
+            {
+                "name": "Job Status",
+                "values": values
+            }
+        ]
+    }
