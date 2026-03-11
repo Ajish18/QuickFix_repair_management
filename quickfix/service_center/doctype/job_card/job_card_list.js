@@ -32,6 +32,7 @@ frappe.listview_settings["Job Card"] = {
                             message: doc.name + " marked as Ready for Delivery",
                             indicator: "green"
                         });
+                        frappe.model.reload_doc("Job Card", doc.name)
                         cur_list.refresh();
                     }
                 }

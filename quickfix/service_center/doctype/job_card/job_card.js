@@ -40,8 +40,16 @@ frappe.ui.form.on("Job Card", {
         // delivered button
         if (frm.doc.status === "Ready for Delivery" && frm.doc.docstatus===1){
             frm.add_custom_button("Mark as Delivered", function(){
-                frm.set_value("status", "Delivered");
-                frm.save();
+                frappe.call({
+                    method: "quickfix.service_center.doctype.job_card.job_card.mark_as_delivered",
+                    args: {
+                        job_card_name: frm.doc.name
+                    },
+                    callback: function() {
+                        frappe.msgprint("Job marked as delivered.");
+                        frm.reload_doc();
+                    }
+                })
             })
         }
         // shop name
@@ -69,6 +77,7 @@ frappe.ui.form.on("Job Card", {
             });
             dialog.show();
         });
+        if(frm.doc.docstatus != 1){
         frm.add_custom_button("Transfer Technician", function () {
         frappe.prompt(
             [
@@ -91,6 +100,7 @@ frappe.ui.form.on("Job Card", {
                     callback: function () {
                         frm.set_value("assigned_technician", values.technician);
                         frm.trigger("assigned_technician");
+                        frm.reload_doc()
                     }
                 });
             });
@@ -98,7 +108,9 @@ frappe.ui.form.on("Job Card", {
         "Transfer Technician",
         "Transfer"
     );
-});
+    });
+        }
+    
     },
 
     device_type(frm) {

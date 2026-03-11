@@ -39,7 +39,7 @@ class JobCard(Document):
         self.parts_total=sum
     
     def get_labour_charge(self):
-        # self.labour_charge=frappe.db.get_single_value("Quickfix Settings","default_labour_charge")
+        self.labour_charge=frappe.db.get_single_value("Quickfix Settings","default_labour_charge")
         self.final_amount=self.parts_total+self.labour_charge
     
     def check_ready_for_delivery(self):
@@ -125,9 +125,12 @@ def transfer_technician(job_card_name, technician):
     device_type=frappe.db.get_value("Job Card", job_card_name, "device_type")
     if specialization==device_type:
         frappe.db.set_value("Job Card", job_card_name, "assigned_technician", technician)
-        frappe.db.commit()
+            
 @frappe.whitelist()
 def mark_ready_for_delivery(job_card):
     frappe.db.set_value("Job Card", job_card, "status", "Ready for Delivery")
-    frappe.db.commit()
+    return True
+@frappe.whitelist()
+def mark_as_delivered(job_card_name):
+    frappe.db.set_value("Job Card", job_card_name, "status", "Delivered")
     return True

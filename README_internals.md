@@ -193,3 +193,35 @@ H4 - Client Script DocType vs Shipped
     * hiding fields vs permission security:
     Hiding done in client script will be hidden only in UI. It does'nt check permission. It can be accessed with api methods. Becaues it runs only in browser, for safety It must be handled in the server side.
 --------------------------------------------------------------------------------------------
+I1 - Query Report with SQL Safety
+    * f string, sql cannot differentiate between user input and query, So attacker can modify the query.
+    * If we use parameterized, the input will be considered as data, not query.
+
+    Safe:
+    In [8]: device = "' OR 1=1#"
+    ...: query = """
+    ...: SELECT name, device_type
+    ...: FROM `tabJob Card`
+    ...: WHERE device_type = %(device)s
+    ...: """
+    ...: frappe.db.sql(query, {"device": device}, as_dict=True)
+    Out[8]: []
+    frappe.db.sql(query, {"device": device}, as_dict=True) is the safest method, it returns [] if the device is empty.
+    But using, f it will give all the Jobcard name and device_type
+
+    Unsafe:
+    In [3]: device = "' OR 1=1#"
+   ...: 
+   ...: query = f"""
+   ...: SELECT name, device_type
+   ...: FROM `tabJob Card`
+   ...: WHERE device_type = '{device}'
+   ...: """
+   ...: print(query)
+   ...: frappe.db.sql(query, as_dict=True)
+
+    If the input is "", it list all the jobcards.
+
+    search_index:
+    ![alt text](image.png)
+--------------------------------------------------------------------------------------------
