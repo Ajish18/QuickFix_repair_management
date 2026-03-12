@@ -227,3 +227,10 @@ I1 - Query Report with SQL Safety
 --------------------------------------------------------------------------------------------
 I4 - Prepared Report
 Realtime-Script report is used for updated report with small amount of data, and simple calculations. Prepared report is for large data, complex calculations as it requires workers to run in background.
+---------------------------------------------------------------------------------------------
+J1 - Jinja Print Format: Job Card Receipt 
+
+In Frappe transalation of a print format, the field must be wrappe with {{_("test")}}, and the translation, priority will be based on the User's Language given in User Details.
+Next, Language selected from print format and next the systems default Language. If any Translation Language not found, it automatically use English.
+
+Using get_all directly inside jinja template, will return the result. But it is hard to debug and also slower when compare to before_print method. Using before_print will run the get_all and stores the data, during print with shows the data fetched already. So it is comparatively faster as compared to using get_all directly in jinga template.

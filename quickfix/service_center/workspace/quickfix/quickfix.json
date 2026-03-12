@@ -1,0 +1,80 @@
+{
+ "app": "Quickfix",
+ "charts": [
+  {
+   "chart_name": "Job Count",
+   "label": "Job Count"
+  }
+ ],
+ "content": "[]",
+ "creation": "2026-03-12 11:01:16.123039",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "hide_custom": 0,
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Quickfix",
+ "link_type": "DocType",
+ "links": [],
+ "modified": "2026-03-12 11:32:12.900719",
+ "modified_by": "Administrator",
+ "module": "Service Center",
+ "name": "Quickfix",
+ "number_cards": [
+  {
+   "label": "Total Open Job",
+   "number_card_name": "Total Open Job"
+  },
+  {
+   "label": "Today's Revenue",
+   "number_card_name": "Today's Revenue"
+  }
+ ],
+ "owner": "Administrator",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 0.0,
+ "shortcuts": [
+  {
+   "doc_view": "",
+   "label": "Sales Invoice",
+   "link_to": "Service Invoice",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Job Card",
+   "link_to": "Job Card",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Technician",
+   "link_to": "Technician",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Spare Part",
+   "link_to": "Spare Part",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Device Type",
+   "link_to": "Device Type",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Audit Log",
+   "link_to": "Audit Log",
+   "type": "DocType"
+  }
+ ],
+ "title": "Quickfix",
+ "type": "Workspace"
+}

@@ -108,6 +108,11 @@ class JobCard(Document):
     def on_trash(self):
         if self.status!="Cancelled" and self.status!="Draft":
             frappe.throw("Cannot delete this Job Card")
+    
+    
+
+    def before_print(self,print_settings=None):
+        self.print_summary = f"{self.customer_name} - {self.device_brand} {self.device_model}"
             
     # def on_update(self):
     # 	self.save()

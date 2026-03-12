@@ -166,7 +166,7 @@
   },
   {
    "fieldname": "final_amount",
-   "fieldtype": "Currency",
+   "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Final Amount",
    "read_only": 1
@@ -202,7 +202,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-03-10 11:21:25.781064",
+ "modified": "2026-03-12 10:55:42.749717",
  "modified_by": "Administrator",
  "module": "Service Center",
  "name": "Job Card",

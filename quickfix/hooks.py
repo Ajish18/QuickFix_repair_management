@@ -310,7 +310,10 @@ doctype_list_js = {
 }
 
 jinja = {
-    "methods": ["quickfix.utils.get_shop_name"],
+    "methods": [
+        "quickfix.utils.get_shop_name",
+        "quickfix.utils.generate_qr"
+        ],
     "filters": ["quickfix.utils.filter_job_id"]
 }
 
