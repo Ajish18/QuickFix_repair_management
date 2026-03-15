@@ -312,7 +312,7 @@ doctype_list_js = {
 jinja = {
     "methods": [
         "quickfix.utils.get_shop_name",
-        "quickfix.utils.generate_qr"
+        "quickfix.utils.generate_qr",
         ],
     "filters": ["quickfix.utils.filter_job_id"]
 }
@@ -334,3 +334,14 @@ override_whitelisted_methods = {
 }
 
 after_install = "quickfix.monkey_patches.apply_all"
+
+scheduler_events={
+    "daily":[
+        "quickfix.utils.check_low_stock"
+    ],
+    "cron": {
+        "* 2 1 * *": [
+            "quickfix.utils.generate_monthly_revenue_report"
+        ]
+    }
+}

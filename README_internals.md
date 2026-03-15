@@ -154,7 +154,7 @@ Jinja Hooks:
 
 F4 - override_whitelisted_methods Hook 
 
-override_whitelisted_method -> this can be used to modif one apps method to other without  
+override_whitelisted_method -> this can be used to modify one apps method to other without  
                                changing or editing the actual code.
 monkey_patch - It is used to modify the function in runtime, and it is difficult to debug.
 
@@ -234,3 +234,316 @@ In Frappe transalation of a print format, the field must be wrappe with {{_("tes
 Next, Language selected from print format and next the systems default Language. If any Translation Language not found, it automatically use English.
 
 Using get_all directly inside jinja template, will return the result. But it is hard to debug and also slower when compare to before_print method. Using before_print will run the get_all and stores the data, during print with shows the data fetched already. So it is comparatively faster as compared to using get_all directly in jinga template.
+---------------------------------------------------------------------------------------------
+J2 - Raw Print vs HTML to PDF
+
+* Raw Print, is the print format, that doesn't require HTML, rather it is uses
+    eg. Customer Name: {{doc.customer_name}}
+
+It is actually used for POS/ Thermal receipt printers, as it doesn't require any CSS.
+
+Weasy print -> it converts HTML + CSS to PDF.
+
+CSS properties doesn't work, grid, flex box, position: fixed. All these comes in browser but not in pdf.
+
+commands ESC/POS
+    ESC @	Reset printer
+    ESC E 1	Bold ON
+    ESC E 0	Bold OFF
+    ESC a 1	Center align
+    ESC a 0	Left align
+    GS V 0	Cut paper
+---------------------------------------------------------------------------------------------K1 - Background Jobs: Queues, Timeouts, Progress
+Task A - Queue names
+    * short - used for fast jobs, like sending one email, sms.
+    * default - used for normal, simple calculations, like updating the audit logs.
+    * long - used for long time consuming tasks, like preparing a complex report.
+Task D - Job failure handling:
+    Frappe does not automatically retry failed job. Failed jobs must be retried manually from the RQ Failed Jobs interface.
+K2 - Scheduler Events & Cron 
+    * To diable schedulers for a specific site using:
+        bench --site site_name disable-scheduler
+
+    Developer manually test the scheduler jobs, if scheduler is running it may execute twice so it is diabled in developer mode.
+
+    * If the worker is down, the scheduled job remain in the queue, when the worker is up, it will execute it. For, crom, if a job is to be executed at 10 Am, but worker start at 11 AM, it will execute the job at 11 Am.
+---------------------------------------------------------------------------------------------
+K3 - Performance Engineering
+Task A - N+1 query detection and fix
+Corrected version:
+    jobcards=frappe.get_all("Job Card", fields=["name","assigned_technician"])
+    list=[]
+    for i in jobcards:
+        list.append(i.assigned_technician)
+    technician=frappe.get_all("Technician",filters={"name",list}fields=["name","phone_number"])
+Task B - Bulk operations:
+    * Bulk update will be faster, as it runs a single query.![alt text](image-1.png)![alt text](image-2.png)
+Task C - Indexing:
+In [1]: frappe.db.sql("SHOW INDEX FROM `tabJob Card`", as_dict=True)
+Out[1]: 
+[{'Table': 'tabJob Card',
+  'Non_unique': 0,
+  'Key_name': 'PRIMARY',
+  'Seq_in_index': 1,
+  'Column_name': 'name',
+  'Collation': 'A',
+  'Cardinality': 57,
+  'Sub_part': None,
+  'Packed': None,
+  'Null': '',
+  'Index_type': 'BTREE',
+  'Comment': '',
+  'Index_comment': '',
+  'Ignored': 'NO'},
+ {'Table': 'tabJob Card',
+  'Non_unique': 1,
+  'Key_name': 'creation',
+  'Seq_in_index': 1,
+  'Column_name': 'creation',
+  'Collation': 'A',
+  'Cardinality': 57,
+  'Sub_part': None,
+  'Packed': None,
+  'Null': 'YES',
+  'Index_type': 'BTREE',
+  'Comment': '',
+  'Index_comment': '',
+  'Ignored': 'NO'},
+ {'Table': 'tabJob Card',
+  'Non_unique': 1,
+  'Key_name': 'amended_from_index',
+  'Seq_in_index': 1,
+  'Column_name': 'amended_from',
+  'Collation': 'A',
+  'Cardinality': 28,
+  'Sub_part': None,
+  'Packed': None,
+  'Null': 'YES',
+  'Index_type': 'BTREE',
+  'Comment': '',
+  'Index_comment': '',
+  'Ignored': 'NO'},
+ {'Table': 'tabJob Card',
+  'Non_unique': 1,
+  'Key_name': 'status_index',
+  'Seq_in_index': 1,
+  'Column_name': 'status',
+  'Collation': 'A',
+  'Cardinality': 8,
+  'Sub_part': None,
+  'Packed': None,
+  'Null': 'YES',
+  'Index_type': 'BTREE',
+  'Comment': '',
+  'Index_comment': '',
+  'Ignored': 'NO'}]
+
+Verified index for status and assigned_technician
+frappe.db.sql("SHOW INDEX FROM `tabJob Card`", as_dict=True)
+
+{'Table': 'tabJob Card',
+  'Non_unique': 1,
+  'Key_name': 'status_index',
+  'Seq_in_index': 1,
+  'Column_name': 'status',
+  'Collation': 'A',
+  'Cardinality': 8,
+  'Sub_part': None,
+  'Packed': None,
+  'Null': 'YES',
+  'Index_type': 'BTREE',
+  'Comment': '',
+  'Index_comment': '',
+  'Ignored': 'NO'},
+ {'Table': 'tabJob Card',
+  'Non_unique': 1,
+  'Key_name': 'assigned_technician_index',
+  'Seq_in_index': 1,
+  'Column_name': 'assigned_technician',
+  'Collation': 'A',
+  'Cardinality': 8,
+  'Sub_part': None,
+  'Packed': None,
+  'Null': 'YES',
+  'Index_type': 'BTREE',
+  'Comment': '',
+  'Index_comment': '',
+  'Ignored': 'NO'}
+
+  Indexing increases the speed, but using to every field, during update, search, delete it takes much time and storage. It is prefered only for the field frequently used for filtering.
+
+---------------------------------------------------------------------------------------------
+L1 - REST Resource API & Custom API
+Task A - Resource API (test with curl or Postman):
+• GET /api/resource/Job Card - list Job Cards (use session cookie from browser)
+    http://quickfix-dev.localhost:8000/api/resource/Job%20Card
+
+    {
+    "data": [
+        {
+            "name": "JC-2026-00001"
+        },
+        {
+            "name": "JC-2026-00002"
+        },
+        {
+            "name": "JC-2026-00003"
+        },
+        {
+            "name": "JC-2026-00004"
+        },
+        {
+            "name": "JC-2026-00005"
+        },
+        {
+            "name": "JC-2026-00006"
+        },
+        {
+            "name": "JC-2026-00007"
+        },
+        {
+            "name": "JC-2026-00007-1"
+        },
+        {
+            "name": "JC-2026-00007-2"
+        },
+        {
+            "name": "JC-2026-00007-3"
+        },
+        {
+            "name": "JC-2026-00007-4"
+        },
+        {
+            "name": "JC-2026-00008"
+        },
+        {
+            "name": "JC-2026-00009"
+        },
+        {
+            "name": "JC-2026-00010"
+        },
+        {
+            "name": "JC-2026-00011"
+        },
+        {
+            "name": "JC-2026-00012"
+        },
+        {
+            "name": "JC-2026-00013"
+        },
+        {
+            "name": "JC-2026-00014"
+        },
+        {
+            "name": "JC-2026-00015"
+        },
+        {
+            "name": "JC-2026-00016"
+        }
+    ]
+}
+
+• GET /api/resource/Job Card/JC-0001 - single doc
+http://quickfix-dev.localhost:8000/api/resource/Job%20Card/JC-2026-00001
+{
+    "data": {
+        "name": "JC-2026-00001",
+        "owner": "Administrator",
+        "creation": "2026-02-28 23:50:47.138135",
+        "modified": "2026-02-28 23:50:53.069095",
+        "modified_by": "Administrator",
+        "docstatus": 1,
+        "idx": 1,
+        "customer_name": "test1",
+        "customer_phone": "1234567890",
+        "device_type": "Smartphone",
+        "problem_description": "<div class=\"ql-editor read-mode\"><p>test</p></div>",
+        "estimated_cost": 0.0,
+        "priority": "Normal",
+        "parts_total": 0.0,
+        "labour_charge": 500.0,
+        "final_amount": 0.0,
+        "payment_status": "Unpaid",
+        "status": "Draft",
+        "doctype": "Job Card",
+        "parts_used": []
+    }
+}
+• POST /api/resource/Spare Part - create a part
+http://quickfix-dev.localhost:8000/api/resource/Job%20Card/
+{
+    "data": {
+        "name": "JC-2026-00047",
+        "owner": "Administrator",
+        "creation": "2026-03-15 21:43:15.773649",
+        "modified": "2026-03-15 21:43:15.773649",
+        "modified_by": "Administrator",
+        "docstatus": 0,
+        "idx": 0,
+        "customer_name": "test1",
+        "customer_phone": "1234567890",
+        "device_type": "Smartphone",
+        "problem_description": "test",
+        "estimated_cost": 0.0,
+        "priority": "Normal",
+        "parts_total": 0.0,
+        "labour_charge": 500.0,
+        "final_amount": 500.0,
+        "payment_status": "Unpaid",
+        "status": "Draft",
+        "doctype": "Job Card",
+        "parts_used": []
+    }
+}
+PUT /api/resource/Spare Part/PART-0001 - update a field
+http://quickfix-dev.localhost:8000/api/resource/Spare%20Part/TEST-PART-YYYY-0002
+{
+    "data": {
+        "name": "TEST-PART-YYYY-0002",
+        "owner": "Administrator",
+        "creation": "2026-02-25 17:06:12.150513",
+        "modified": "2026-03-15 21:47:22.786231",
+        "modified_by": "Administrator",
+        "docstatus": 0,
+        "idx": 7,
+        "part_name": "test",
+        "part_code": "test",
+        "compatible_device_type": "Laptop",
+        "unit_cost": 1000.0,
+        "selling_price": 4000.0,
+        "stock_quantity": 1.0,
+        "reorder_level": 5.0,
+        "is_active": 1,
+        "doctype": "Spare Part"
+    }
+}
+DELETE /api/resource/Spare Part/PART-0001 - delete it
+http://quickfix-dev.localhost:8000/api/resource/Spare%20Part/B-PORT-PART-2026-0001
+{
+    "data": "ok"
+}
+Task B - Token Authentication (API key + secret):
+* Session cookie authentication uses, session id, as it requires login and also have csrf token.
+* API key:secret key doesn't require login, for every user sepatrate api access is created.
+
+Task C - Custom whitelisted method design:
+http://quickfix-dev.localhost:8000/api/method/quickfix.api.get_job_summary?job_card_name=JC-2026-00001
+{
+  "message": {
+    "job_card": "JC-2026-00001",
+    "customer_name": "test1",
+    "status": "Draft",
+    "final_amount": 0,
+    "today": "2026-03-15"
+  }
+}
+Task D - Rate limiting & abuse protection:
+Using, allow_guest =True allow, all without login.
+1. Data Scraping
+Attackers can repeatedly call the API to collect large amounts of data.
+2. Brute Force / Enumeration Attack
+Attackers may try many different inputs to discover valid records.
+3. Denial of Service (DoS)
+Attackers may send a very large number of requests to the API.
+
+---------------------------------------------------------------------------------------------

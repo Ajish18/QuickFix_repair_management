@@ -1,5 +1,5 @@
 import frappe
-
+from datetime import date
 
 @frappe.whitelist()
 def get_job_summary():
@@ -193,3 +193,46 @@ def get_status_chart_data():
             }
         ]
     }
+
+
+@frappe.whitelist()
+def get_job_summary():
+    job_card_name = frappe.form_dict.get("job_card_name")
+    if not frappe.db.exists("Job Card", job_card_name):
+        frappe.local.response["http_status_code"] = 404
+        return {"error": "Not found"}
+
+    job = frappe.get_doc("Job Card", job_card_name)
+    today = date.today()
+    return {
+        "job_card": job.name,
+        "customer_name": job.customer_name,
+        "status": job.status,
+        "final_amount": job.final_amount,
+        "today": today
+    }
+
+# Rate limiting & abuse protection
+@frappe.whitelist(allow_guest=True)
+def get_job_by_phone():
+
+    ip = frappe.local.request_ip
+
+    cache_key = f"rate_limit:{ip}"
+
+    count = frappe.cache().get_value(cache_key) or 0
+    count = int(count)
+
+    if count >= 10:
+        frappe.throw("Too many requests. Try again later.")
+
+    frappe.cache().set_value(cache_key, count + 1, expires_in_sec=60)
+
+    phone = frappe.form_dict.get("phone")
+
+    job = frappe.get_all(
+        "Job Card",
+        filters={"customer_phone": phone},
+        fields=["name", "status", "final_amount"]
+    )
+    return job
