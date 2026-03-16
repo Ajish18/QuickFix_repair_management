@@ -45,6 +45,18 @@
   {
    "child": 0,
    "collapsible": 1,
+   "icon": "calculator",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Service Invoice",
+   "link_to": "Service Invoice",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
    "icon": "settings",
    "indent": 0,
    "keep_closed": 0,
@@ -137,7 +149,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-03-12 13:31:10.288996",
+ "modified": "2026-03-16 11:47:59.850379",
  "modified_by": "Administrator",
  "module": "Service Center",
  "name": "Quickfix",

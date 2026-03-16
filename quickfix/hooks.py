@@ -1,6 +1,5 @@
 from quickfix import quickfix
 
-
 app_name = "quickfix"
 app_title = "QuickFix"
 app_publisher = "ajish"
@@ -258,33 +257,26 @@ app_license = "mit"
 #     {"doctype": "Device Type"}
 # ]
 fixtures = [
-    "Custom Field",
-    "Property Setter",
-    "Role",
-    "Workspace",
-    {"doctype": "Device Type"},
-    {"doctype": "Quickfix Settings"}
+	"Custom Field",
+	"Property Setter",
+	"Role",
+	"Workspace",
+	{"doctype": "Device Type"},
+	{"doctype": "Quickfix Settings"},
 ]
-permission_query_conditions = {
-    "Job Card": "quickfix.permissions.job_card_query"
-}
+permission_query_conditions = {"Job Card": "quickfix.permissions.job_card_query"}
 
-has_permission = {
-    "Service Invoice": "quickfix.permissions.has_permission"
-}
+has_permission = {"Service Invoice": "quickfix.permissions.has_permission"}
 
-override_doctype_class = {
-    "Job Card": "quickfix.overrides.custom_job_card.CustomJobCard"
-}
+override_doctype_class = {"Job Card": "quickfix.overrides.custom_job_card.CustomJobCard"}
 doc_events = {
-    "*": {
-        "on_update": "quickfix.audit.audit_log",
-        "on_submit": "quickfix.audit.audit_log",
-        "on_cancel": "quickfix.audit.audit_log"
-    },
-    "test":{
-        "on_update":"quickfix.audit.audit_log"
-    }
+	"*": {
+		"on_update": "quickfix.audit.audit_log",
+		"on_submit": "quickfix.audit.audit_log",
+		"on_cancel": "quickfix.audit.audit_log",
+	},
+	"test": {"on_update": "quickfix.audit.audit_log"},
+	"Job Card": {"on_submit": "quickfix.api.trigger_webhook"},
 }
 
 # doc_events={
@@ -305,43 +297,25 @@ on_logout = "quickfix.events.log_logout"
 # doctype_js = {
 #     "Job Card": "public/js/job_card.js"
 # }
-doctype_list_js = {
-    "Job Card": "job_card_list.js"
-}
+doctype_list_js = {"Job Card": "job_card_list.js"}
 
 jinja = {
-    "methods": [
-        "quickfix.utils.get_shop_name",
-        "quickfix.utils.generate_qr",
-        ],
-    "filters": ["quickfix.utils.filter_job_id"]
+	"methods": [
+		"quickfix.utils.get_shop_name",
+		"quickfix.utils.generate_qr",
+	],
+	"filters": ["quickfix.utils.filter_job_id"],
 }
 
-website_route_rules = [
-    {"from_route": "/track-job", "to_route": "track_job"}
-]
+website_route_rules = [{"from_route": "/track-job", "to_route": "track_job"}]
 
-portal_menu_items = [
-    {
-        "title": "Track My Job",
-        "route": "/track_job",
-        "role": "Guest"
-    }
-]
+portal_menu_items = [{"title": "Track My Job", "route": "/track_job", "role": "Guest"}]
 
-override_whitelisted_methods = {
- "frappe.client.get_count": "quickfix.api.custom_get_count"
-}
+override_whitelisted_methods = {"frappe.client.get_count": "quickfix.api.custom_get_count"}
 
 after_install = "quickfix.monkey_patches.apply_all"
 
-scheduler_events={
-    "daily":[
-        "quickfix.utils.check_low_stock"
-    ],
-    "cron": {
-        "* 2 1 * *": [
-            "quickfix.utils.generate_monthly_revenue_report"
-        ]
-    }
+scheduler_events = {
+	"daily": ["quickfix.utils.check_low_stock"],
+	"cron": {"* 2 1 * *": ["quickfix.utils.generate_monthly_revenue_report"]},
 }

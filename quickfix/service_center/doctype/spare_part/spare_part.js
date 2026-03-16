@@ -3,6 +3,5 @@
 
 frappe.ui.form.on("Spare Part", {
 	// refresh(frm) {
-
 	// },
 });
