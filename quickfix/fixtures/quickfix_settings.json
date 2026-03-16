@@ -7,6 +7,7 @@
   "manager_email": "manager_quickfix@gmail.com",
   "modified": "2026-03-05 13:30:39.210562",
   "name": "Quickfix Settings",
-  "shop_name": "Quickfix"
+  "shop_name": "Quickfix",
+  "webhook_url": null
  }
 ]
