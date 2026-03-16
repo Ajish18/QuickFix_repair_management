@@ -263,6 +263,7 @@ fixtures = [
 	"Workspace",
 	{"doctype": "Device Type"},
 	{"doctype": "Quickfix Settings"},
+	"Server Script"
 ]
 permission_query_conditions = {"Job Card": "quickfix.permissions.job_card_query"}
 
